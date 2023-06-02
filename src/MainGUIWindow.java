@@ -13,6 +13,7 @@ public class MainGUIWindow extends JFrame {
     private Map<String, String> notesMap;
     private JPanel topPanel;
     private JPanel centerPanel;
+    private JPanel openTopPanel;
 
     public MainGUIWindow() {
         notesMap = new HashMap<>();
@@ -77,6 +78,13 @@ public class MainGUIWindow extends JFrame {
         noteTextArea = new JTextArea();
         notesFrame.add(noteTextArea, BorderLayout.CENTER);
 
+        openTopPanel = new JPanel();
+        openTopPanel.setPreferredSize(new Dimension(400, 50));
+        openTopPanel.setBackground(new Color(153, 204, 255));
+        openTopPanel.setLayout(new FlowLayout());
+        notesFrame.add(openTopPanel, BorderLayout.NORTH);
+
+        JButton colorButton = new JButton("Color");
         JButton saveButton = new JButton("Save Note");
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -105,6 +113,7 @@ public class MainGUIWindow extends JFrame {
             }
         }
     }
+
     private void saveNote() {
         String noteTitle = JOptionPane.showInputDialog(mainFrame, "Enter a title for the note:");
         String noteContent = noteTextArea.getText();
