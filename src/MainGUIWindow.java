@@ -8,12 +8,15 @@ import java.util.Map;
 public class MainGUIWindow extends JFrame {
     private JFrame mainFrame;
     private JFrame notesFrame;
+    private JFrame clearFrame;
     private JTextArea noteTextArea;
     private JLabel title;
+    private JLabel clearNotif;
     private Map<String, String> notesMap;
     private JPanel topPanel;
     private JPanel centerPanel;
     private JPanel openTopPanel;
+    private JPanel clearCenter;
 
     public MainGUIWindow() {
         notesMap = new HashMap<>();
@@ -47,7 +50,7 @@ public class MainGUIWindow extends JFrame {
                 openNotesWindow();
             }
         });
-        addButton.setBounds(130, 150, 150, 100);
+        addButton.setBounds(130, 100, 150, 100);
         centerPanel.add(addButton, BorderLayout.WEST);
         topPanel.add(title, BorderLayout.NORTH);
 
@@ -61,8 +64,21 @@ public class MainGUIWindow extends JFrame {
                 viewNotes();
             }
         });
-        viewButton.setBounds(390, 150, 150, 100);
+        viewButton.setBounds(390, 100, 150, 100);
         centerPanel.add(viewButton, BorderLayout.EAST);
+
+        JButton clearButton = new JButton();
+        clearButton.setText("Clear Notes");
+        clearButton.setFont(new Font("Comic Sans MS", Font.BOLD, 19));
+        clearButton.setBackground(Color.BLUE);
+        clearButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearNote();
+            }
+        });
+        clearButton.setBounds(260, 220, 150, 100);
+        centerPanel.add(clearButton, BorderLayout.SOUTH);
 
         mainFrame.setSize(700, 500);
         mainFrame.getContentPane().setBackground(new Color(251, 231, 198));
@@ -85,6 +101,12 @@ public class MainGUIWindow extends JFrame {
         notesFrame.add(openTopPanel, BorderLayout.NORTH);
 
         JButton colorButton = new JButton("Color");
+        colorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Buttons.setColor();
+            }
+        });
         JButton saveButton = new JButton("Save Note");
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -119,6 +141,52 @@ public class MainGUIWindow extends JFrame {
         String noteContent = noteTextArea.getText();
         notesMap.put(noteTitle, noteContent);
         notesFrame.dispose();
+    }
+
+    private void clearNote() {
+        clearFrame = new JFrame();
+        clearFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        clearFrame.setLayout(new BorderLayout());
+
+        clearNotif = new JLabel();
+        clearNotif.setText("Are you sure that you want to clear?");
+        clearNotif.setHorizontalAlignment(JLabel.CENTER);
+        clearNotif.setFont(new Font("Comic Sans MS", Font.BOLD, 19));
+
+        clearCenter = new JPanel();
+        clearCenter.setOpaque(false);
+        clearCenter.setLayout(null);
+
+        JButton confirmButton = new JButton("Clear");
+        confirmButton.setFont(new Font("Times New Roman", Font.BOLD, 15));
+        confirmButton.setBackground(new Color(200, 179, 144));
+        confirmButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                notesMap.clear();
+                clearFrame.dispose();
+            }
+        });
+        confirmButton.setBounds(40, 105, 120, 80);
+
+        JButton denyButton = new JButton("Don't Clear");
+        denyButton.setFont(new Font("Times New Roman", Font.BOLD, 15));
+        denyButton.setBackground(new Color(1, 109, 109));
+        denyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clearFrame.dispose();
+            }
+        });
+        denyButton.setBounds(220, 105, 120, 80);
+
+        clearFrame.add(clearNotif, BorderLayout.NORTH);
+        clearFrame.add(clearCenter, BorderLayout.CENTER);
+        clearCenter.add(confirmButton);
+        clearCenter.add(denyButton);
+
+        clearFrame.pack();
+        clearFrame.setSize(400, 400);
+        clearFrame.getContentPane().setBackground(new Color(227, 221, 211));
+        clearFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
