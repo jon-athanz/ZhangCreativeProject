@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,9 +16,12 @@ public class MainGUIWindow extends JFrame {
     private JLabel clearNotif;
     private Map<String, String> notesMap;
     private JPanel topPanel;
+    private JPanel bottomPanel;
     private JPanel centerPanel;
     private JPanel openTopPanel;
     private JPanel clearCenter;
+    private JList<String> notesList;
+    private DefaultListModel<String> notes;
 
     public MainGUIWindow() {
         notesMap = new HashMap<>();
@@ -28,11 +33,15 @@ public class MainGUIWindow extends JFrame {
 
         topPanel = new JPanel();
         topPanel.setBackground(new Color(0));
+        bottomPanel = new JPanel();
+        bottomPanel.setBackground(new Color(255, 239, 213));
+        bottomPanel.setLayout(new FlowLayout());
         mainFrame.add(topPanel, BorderLayout.NORTH);
+        mainFrame.add(bottomPanel, BorderLayout.SOUTH);
 
         centerPanel = new JPanel();
         centerPanel.setOpaque(false);
-        centerPanel.setLayout(null);
+        centerPanel.setLayout(new BorderLayout());
         mainFrame.add(centerPanel, BorderLayout.CENTER);
 
         title = new JLabel();
@@ -51,26 +60,13 @@ public class MainGUIWindow extends JFrame {
             }
         });
         addButton.setBounds(130, 100, 150, 100);
-        centerPanel.add(addButton, BorderLayout.WEST);
+        bottomPanel.add(addButton);
         topPanel.add(title, BorderLayout.NORTH);
-
-        JButton viewButton = new JButton();
-        viewButton.setText("View Notes");
-        viewButton.setFont(new Font("Comic Sans MS", Font.BOLD, 19));
-        viewButton.setBackground(new Color(177, 216, 183));
-        viewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                viewNotes();
-            }
-        });
-        viewButton.setBounds(390, 100, 150, 100);
-        centerPanel.add(viewButton, BorderLayout.EAST);
 
         JButton clearButton = new JButton();
         clearButton.setText("Clear Notes");
         clearButton.setFont(new Font("Comic Sans MS", Font.BOLD, 19));
-        clearButton.setBackground(Color.BLUE);
+        clearButton.setBackground(new Color(135, 206, 235));
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -78,7 +74,25 @@ public class MainGUIWindow extends JFrame {
             }
         });
         clearButton.setBounds(260, 220, 150, 100);
-        centerPanel.add(clearButton, BorderLayout.SOUTH);
+        bottomPanel.add(clearButton);
+
+        notes = new DefaultListModel<>();
+        notesList = new JList<String>(notes);
+        JScrollPane scrollList = new JScrollPane(notesList);
+        notesList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedIndex = notesList.getSelectedIndex();
+                    if (selectedIndex != -1) {
+                        String selectedKey = notesList.getSelectedValue();
+                        String selectedNoteContent = notesMap.get(selectedKey);
+                        JOptionPane.showMessageDialog(mainFrame, selectedNoteContent, selectedKey, JOptionPane.PLAIN_MESSAGE);
+                    }
+                }
+            }
+        });
+        centerPanel.add(scrollList, BorderLayout.CENTER);
 
         mainFrame.setSize(700, 500);
         mainFrame.getContentPane().setBackground(new Color(251, 231, 198));
@@ -100,13 +114,27 @@ public class MainGUIWindow extends JFrame {
         openTopPanel.setLayout(new FlowLayout());
         notesFrame.add(openTopPanel, BorderLayout.NORTH);
 
-        JButton colorButton = new JButton("Color");
+        JButton colorButton = new JButton("Change Color");
         colorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Buttons.setColor();
+                Color selectedColor = JColorChooser.showDialog(notesFrame, "Select Text Color", Color.BLACK);
+                noteTextArea.setForeground(selectedColor);
             }
         });
+        JButton sizeButton = new JButton("Change Size");
+        sizeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int currentSize = noteTextArea.getFont().getSize();
+                int newSize = currentSize + 2;
+                Font currentFont = noteTextArea.getFont();
+                Font newFont = currentFont.deriveFont((float) newSize);
+                noteTextArea.setFont(newFont);
+            }
+        });
+        openTopPanel.add(colorButton);
+        openTopPanel.add(sizeButton);
         JButton saveButton = new JButton("Save Note");
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -121,25 +149,13 @@ public class MainGUIWindow extends JFrame {
         notesFrame.setVisible(true);
     }
 
-    private void viewNotes() {
-        String[] noteTitles = notesMap.keySet().toArray(new String[0]);
-        if (noteTitles.length == 0) {
-            JOptionPane.showMessageDialog(mainFrame, "No notes available.", "View Notes", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            String selectedNoteTitle = (String) JOptionPane.showInputDialog(mainFrame, "Select a note to view:", "View Notes",
-                    JOptionPane.QUESTION_MESSAGE, null, noteTitles, noteTitles[0]);
-
-            if (selectedNoteTitle != null) {
-                String selectedNoteContent = notesMap.get(selectedNoteTitle);
-                JOptionPane.showMessageDialog(mainFrame, selectedNoteContent, selectedNoteTitle, JOptionPane.PLAIN_MESSAGE);
-            }
-        }
-    }
-
     private void saveNote() {
         String noteTitle = JOptionPane.showInputDialog(mainFrame, "Enter a title for the note:");
         String noteContent = noteTextArea.getText();
-        notesMap.put(noteTitle, noteContent);
+        if ((noteTitle != null && !noteTitle.trim().isEmpty()) && (noteContent != null && !noteContent.trim().isEmpty())) {
+            notesMap.put(noteTitle, noteContent);
+            notes.addElement(noteTitle);
+        }
         notesFrame.dispose();
     }
 
@@ -163,6 +179,7 @@ public class MainGUIWindow extends JFrame {
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 notesMap.clear();
+                notes.clear();
                 clearFrame.dispose();
             }
         });
@@ -187,14 +204,5 @@ public class MainGUIWindow extends JFrame {
         clearFrame.setSize(400, 400);
         clearFrame.getContentPane().setBackground(new Color(227, 221, 211));
         clearFrame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new MainGUIWindow();
-            }
-        });
     }
 }
