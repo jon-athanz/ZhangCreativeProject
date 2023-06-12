@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d87068aa-a40b-461d-9673-9d8e6138958f" name="Changes" comment="">
+    <list default="true" id="d87068aa-a40b-461d-9673-9d8e6138958f" name="Changes" comment="ZhangProject">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Buttons.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainGUIWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MainGUIWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,6 +68,14 @@
       <option name="presentableId" value="Default" />
       <updated>1685078797476</updated>
     </task>
+    <task id="LOCAL-00001" summary="ZhangProject">
+      <created>1686289138175</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1686289138175</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -83,5 +88,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ZhangProject" />
+    <option name="LAST_COMMIT_MESSAGE" value="ZhangProject" />
   </component>
 </project>
